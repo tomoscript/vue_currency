@@ -1,7 +1,9 @@
 <template>
   <div>
     <v-app-bar app>
-      <div @click="toggleDrawer" v-if="isSmallScreen">Menu</div>
+      <div @click="toggleDrawer" v-if="isSmallScreen" class="menu__button">
+        <v-icon>mdi-menu</v-icon>
+      </div>
       <v-toolbar-title @click="goHome()" class="logo"> CurrencyExchange </v-toolbar-title>
       <v-spacer></v-spacer>
       <Navigation v-if="!isSmallScreen" />
@@ -47,4 +49,9 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.menu__button {
+  cursor: pointer;
+  margin-right: 12px;
+}
+</style>

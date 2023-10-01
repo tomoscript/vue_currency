@@ -1,6 +1,8 @@
 <template>
   <v-list class="navigation">
-    <div v-if="type === 'drawer'" @click="toggleDrawer" class="close__drawer">Close</div>
+    <div v-if="type === 'drawer'" @click="toggleDrawer" class="close__drawer">
+      <v-icon>mdi-close</v-icon>
+    </div>
     <v-list-item @click="navigateTo('home')">
       <v-list-item-title>Home</v-list-item-title>
     </v-list-item>

@@ -1,24 +1,20 @@
-# currency_exchange
+# CurrencyExchange
 
-## Project setup
-```
-yarn install
-```
+### API
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+- [Base Country & Currency DB](https://restcountries.com/#endpoints-all).
+- [Exchange Rate](https://github.com/fawazahmed0/currency-api#readme).
+- [Country / & Currency Paging](https://app.26r.my.id).
 
-### Compiles and minifies for production
-```
-yarn build
-```
+## Mockup
 
-### Lints and fixes files
-```
-yarn lint
-```
+- ![Mockup Image](./src/assets/images/mockup-currency.jpg)
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Preview
+
+- Home
+- ![Home](./src/assets/images/home.png)
+- Currency
+- ![Currency](./src/assets/images/currency.png)
+- Country
+- ![Country](./src/assets/images/country.png)
