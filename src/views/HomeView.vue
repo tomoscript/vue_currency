@@ -8,12 +8,14 @@
               <div class="flex__row items__center">
                 <InputText v-model="sourceValue" />
                 <div class="currency__wrapper">
-                  <span class="currency__name">{{ sourceCurrency }}</span>
+                  <span class="currency__name">{{
+                    this.$store.state.currency.sourceCurrency.toUpperCase()
+                  }}</span>
                   <img alt="chevron_down" src="../assets/icons/chevron_down.svg" width="16" />
                 </div>
               </div>
             </div>
-            <div class="change__button__wrapper">
+            <div class="change__button__wrapper" @click="switchCurrency">
               <div class="change__button">
                 <img alt="chevron_down" src="../assets/icons/transfer.svg" width="24" />
               </div>
@@ -21,7 +23,9 @@
             <div class="flex__column">
               <div class="flex__row items__center">
                 <div class="currency__wrapper">
-                  <span class="currency__name">{{ targetCurrency }}</span>
+                  <span class="currency__name">{{
+                    this.$store.state.currency.targetCurrency.toUpperCase()
+                  }}</span>
                   <img alt="chevron_down" src="../assets/icons/chevron_down.svg" width="16" />
                 </div>
               </div>
@@ -29,12 +33,14 @@
           </div>
         </div>
         <div class="exchange__result">
-          1 {{ sourceCurrency }} = <span class="text__success">{{ rateValue }}</span> {{ targetCurrency }}
+          1 {{ this.$store.state.currency.sourceCurrency.toUpperCase() }} =
+          <span class="text__success">{{ this.$store.state.currency.rateCurrency }}</span>
+          {{ this.$store.state.currency.targetCurrency.toUpperCase() }}
         </div>
         <div class="exchange__result">
-          {{ formattedSource }} {{ sourceCurrency }} =
+          {{ formattedSource }} {{ this.$store.state.currency.sourceCurrency.toUpperCase() }} =
           <span class="text__success">{{ formattedTarget }}</span>
-          {{ targetCurrency }}
+          {{ this.$store.state.currency.targetCurrency.toUpperCase() }}
         </div>
       </div>
     </div>
@@ -52,11 +58,7 @@ export default {
   data() {
     return {
       sourceValue: "",
-      sourceCurrency: this.$store.state.currency.sourceCurrency.toUpperCase(),
       targetValue: "",
-      targetCurrency: this.$store.state.currency.targetCurrency.toUpperCase(),
-
-      rateValue: this.$store.state.currency.rateCurrency,
     };
   },
   methods: {
@@ -69,13 +71,20 @@ export default {
         return number.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
       }
     },
+    switchCurrency() {
+      const tempSource = this.$store.state.currency.sourceCurrency;
+      const tempTarget = this.$store.state.currency.targetCurrency;
+      this.$store.commit("currency/setSourceCurrency", tempTarget);
+      this.$store.commit("currency/setTargetCurrency", tempSource);
+      this.$store.dispatch("currency/fetchRate");
+    },
   },
   watch: {
     sourceValue(newVal) {
       if (newVal == 0) {
         this.targetValue = 0;
       } else {
-        this.targetValue = parseFloat(newVal) * parseFloat(this.rateValue);
+        this.targetValue = parseFloat(newVal) * this.$store.state.currency.rateCurrency;
       }
     },
   },
