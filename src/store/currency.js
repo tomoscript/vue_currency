@@ -5,6 +5,8 @@ const state = () => ({
   targetCurrency: "idr",
   rateCurrency: 0,
   loading: false,
+
+  listCurrency: [],
 });
 
 const mutations = {
@@ -20,6 +22,9 @@ const mutations = {
   setLoading(state, data) {
     state.loading = data;
   },
+  setListCurrency(state, data) {
+    state.listCurrency = data;
+  },
 };
 
 const actions = {
@@ -34,6 +39,21 @@ const actions = {
       const resData = response.data;
 
       store.commit("setRateCurrency", resData[store.state.targetCurrency]);
+      store.commit("setLoading", false);
+    } catch (error) {
+      console.log(error);
+      store.commit("setLoading", false);
+    }
+  },
+  async fetchCurrencies(store) {
+    try {
+      store.commit("setLoading", true);
+      const baseUrl = "https://app.26r.my.id";
+      const response = await axios.get(`${baseUrl}/public/api/currency?limit=250`);
+
+      const resData = response.data;
+
+      store.commit("setListCurrency", resData.data);
       store.commit("setLoading", false);
     } catch (error) {
       console.log(error);

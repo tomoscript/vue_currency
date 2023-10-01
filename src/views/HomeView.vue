@@ -7,7 +7,7 @@
             <div class="flex__column">
               <div class="flex__row items__center">
                 <InputText v-model="sourceValue" />
-                <div class="currency__wrapper">
+                <div class="currency__wrapper" @click="setPopupModal(true, 'source')">
                   <span class="currency__name">{{
                     this.$store.state.currency.sourceCurrency.toUpperCase()
                   }}</span>
@@ -22,7 +22,7 @@
             </div>
             <div class="flex__column">
               <div class="flex__row items__center">
-                <div class="currency__wrapper">
+                <div class="currency__wrapper" @click="setPopupModal(true, 'target')">
                   <span class="currency__name">{{
                     this.$store.state.currency.targetCurrency.toUpperCase()
                   }}</span>
@@ -34,7 +34,7 @@
         </div>
         <div class="exchange__result">
           1 {{ this.$store.state.currency.sourceCurrency.toUpperCase() }} =
-          <span class="text__success">{{ this.$store.state.currency.rateCurrency }}</span>
+          <span class="text__success">{{ formatThousand(this.$store.state.currency.rateCurrency) }}</span>
           {{ this.$store.state.currency.targetCurrency.toUpperCase() }}
         </div>
         <div class="exchange__result">
@@ -42,6 +42,30 @@
           <span class="text__success">{{ formattedTarget }}</span>
           {{ this.$store.state.currency.targetCurrency.toUpperCase() }}
         </div>
+
+        <v-dialog v-model="popupModal" scrollable width="auto">
+          <v-card>
+            <v-card-title>Select Currency</v-card-title>
+            <v-divider></v-divider>
+            <v-card-text style="height: 400px">
+              <div v-for="curr in this.$store.state.currency.listCurrency" :key="curr.currency_code">
+                <div class="currency__option" @click="changeCurrency(curr.currency_code)">
+                  {{ curr.currency_code }} - {{ curr.currency_name }}
+                </div>
+              </div>
+            </v-card-text>
+            <v-divider></v-divider>
+          </v-card>
+        </v-dialog>
+
+        <v-dialog v-model="this.$store.state.currency.loading" :scrim="false" persistent width="200px">
+          <v-card color="#c5e1c5">
+            <v-card-text>
+              Loading
+              <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
       </div>
     </div>
   </div>
@@ -59,6 +83,10 @@ export default {
     return {
       sourceValue: "",
       targetValue: "",
+
+      popupModal: false,
+      currentPopup: "",
+      dialogModel: "",
     };
   },
   methods: {
@@ -66,7 +94,8 @@ export default {
       const string = number.toString();
       if (string.includes(".")) {
         const arrStr = string.split(".");
-        return arrStr[0].replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + "." + arrStr[1];
+        const commaStr = arrStr[1].length > 5 ? arrStr[1].substr(0, 5) : arrStr[1];
+        return arrStr[0].replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + "," + commaStr;
       } else {
         return number.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
       }
@@ -77,6 +106,22 @@ export default {
       this.$store.commit("currency/setSourceCurrency", tempTarget);
       this.$store.commit("currency/setTargetCurrency", tempSource);
       this.$store.dispatch("currency/fetchRate");
+    },
+    setPopupModal(isShow, type) {
+      this.popupModal = isShow;
+      this.currentPopup = type;
+    },
+    changeCurrency(currency) {
+      if (this.currentPopup == "source") {
+        this.$store.commit("currency/setSourceCurrency", currency.toLowerCase());
+        this.$store.dispatch("currency/fetchRate");
+      } else {
+        this.$store.commit("currency/setTargetCurrency", currency.toLowerCase());
+        this.$store.dispatch("currency/fetchRate");
+      }
+      this.setPopupModal(false, "");
+
+      this.sourceValue = "";
     },
   },
   watch: {
@@ -98,6 +143,7 @@ export default {
   },
   mounted() {
     this.$store.dispatch("currency/fetchRate");
+    this.$store.dispatch("currency/fetchCurrencies");
   },
 };
 </script>
@@ -144,5 +190,16 @@ export default {
 .text__success {
   color: #d30000;
   font-weight: 600;
+}
+.currency__option {
+  padding: 12px 16px;
+  cursor: pointer;
+  color: black;
+}
+.currency__option:hover {
+  background-color: #c5e1c5;
+}
+.v-dialog > .v-card > .v-card__text {
+  padding: 0;
 }
 </style>
