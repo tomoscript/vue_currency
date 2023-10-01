@@ -5,7 +5,6 @@
         <div class="exchange__form">
           <div class="flex__row items__center">
             <div class="flex__column">
-              <label>Currency</label>
               <div class="flex__row items__center">
                 <InputText v-model="sourceValue" />
                 <div class="currency__wrapper">
@@ -20,9 +19,7 @@
               </div>
             </div>
             <div class="flex__column">
-              <label>Convert to</label>
               <div class="flex__row items__center">
-                <InputText v-model="targetValue" />
                 <div class="currency__wrapper">
                   <span class="currency__name">{{ targetCurrency }}</span>
                   <img alt="chevron_down" src="../assets/icons/chevron_down.svg" width="16" />
@@ -30,6 +27,9 @@
               </div>
             </div>
           </div>
+        </div>
+        <div class="exchange__result">
+          1 {{ sourceCurrency }} = <span class="text__success">{{ rateValue }}</span> {{ targetCurrency }}
         </div>
         <div class="exchange__result">
           {{ formattedSource }} {{ sourceCurrency }} =
@@ -51,7 +51,7 @@ export default {
   },
   data() {
     return {
-      sourceValue: "1",
+      sourceValue: "",
       sourceCurrency: this.$store.state.currency.sourceCurrency.toUpperCase(),
       targetValue: "",
       targetCurrency: this.$store.state.currency.targetCurrency.toUpperCase(),
@@ -78,24 +78,16 @@ export default {
         this.targetValue = parseFloat(newVal) * parseFloat(this.rateValue);
       }
     },
-    targetValue(newVal) {
-      if (newVal == 0) {
-        this.sourceValue = 0;
-      } else {
-        this.sourceValue = parseFloat(newVal) / parseFloat(this.rateValue);
-      }
-    },
   },
   computed: {
     formattedSource() {
-      return this.formatThousand(this.sourceValue);
+      return this.sourceValue.length > 0 ? this.formatThousand(this.sourceValue) : 0;
     },
     formattedTarget() {
-      return this.formatThousand(this.targetValue);
+      return this.targetValue > 0 ? this.formatThousand(this.targetValue) : 0;
     },
   },
   mounted() {
-    console.log("mounted");
     this.$store.dispatch("currency/fetchRate");
   },
 };
@@ -128,10 +120,6 @@ export default {
 }
 .currency__name {
   margin-right: 4px;
-}
-
-.change__button__wrapper {
-  padding-top: 16px;
 }
 .change__button {
   background-color: gold;
