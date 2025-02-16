@@ -49,7 +49,7 @@
         <v-card-title>Select Currency</v-card-title>
         <v-divider></v-divider>
         <v-card-text style="height: 400px">
-          <div v-for="(currency_name, currency_code)  in this.$store.state.currency.listCurrency">
+          <div v-for="(currency_name, currency_code)  in this.$store.state.currency.listCurrency" :key="currency_code">
             <div class="currency__option" @click="changeCurrency(currency_code)">
               {{ currency_code }} - {{ currency_name }}
             </div>
