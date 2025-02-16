@@ -53,7 +53,7 @@ const actions = {
 
       const resData = response.data;
 
-      store.commit("setListCurrency", resData.data);
+      store.commit("setListCurrency", resData);
       store.commit("setLoading", false);
     } catch (error) {
       console.log(error);
