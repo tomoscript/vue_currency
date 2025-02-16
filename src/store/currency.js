@@ -48,8 +48,8 @@ const actions = {
   async fetchCurrencies(store) {
     try {
       store.commit("setLoading", true);
-      const baseUrl = "https://app.26r.my.id";
-      const response = await axios.get(`${baseUrl}/public/api/currency?limit=250`);
+      const baseUrl = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies.json";
+      const response = await axios.get(`${baseUrl}?limit=250`);
 
       const resData = response.data;
 
