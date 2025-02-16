@@ -33,12 +33,12 @@ const actions = {
       store.commit("setLoading", true);
       const baseUrl = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies";
       const response = await axios.get(
-        `${baseUrl}/${store.state.sourceCurrency}/${store.state.targetCurrency}.json`
+        `${baseUrl}/${store.state.targetCurrency}.json`
       );
 
       const resData = response.data;
 
-      store.commit("setRateCurrency", resData[store.state.targetCurrency]);
+      store.commit("setRateCurrency", resData[store.state.targetCurrency][store.state.sourceCurrency]);
       store.commit("setLoading", false);
     } catch (error) {
       console.log(error);
