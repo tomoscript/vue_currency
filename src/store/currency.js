@@ -31,7 +31,7 @@ const actions = {
   async fetchRate(store) {
     try {
       store.commit("setLoading", true);
-      const baseUrl = "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies";
+      const baseUrl = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies";
       const response = await axios.get(
         `${baseUrl}/${store.state.sourceCurrency}/${store.state.targetCurrency}.json`
       );
